@@ -1,9 +1,9 @@
 import React from 'react';
 import { Router, Route, IndexRoute } from 'react-router';
 import { createHistory } from 'history';
-import ApplicationPage from './components/pages/ApplicationPage/ApplicationPage';
-import IndexPage from './components/pages/IndexPage/IndexPage';
-import AboutPage from './components/pages/AboutPage/AboutPage';
+import ApplicationPage from './pages/ApplicationPage/ApplicationPage';
+import IndexPage from './pages/IndexPage/IndexPage';
+import AboutPage from './pages/AboutPage/AboutPage';
 
 export default (
   <Router history={createHistory()}>
