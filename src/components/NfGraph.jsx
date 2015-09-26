@@ -31,6 +31,34 @@ export default class NfGraph extends Component {
     linearScale:    PropTypes.func
   }
 
+  on(name, handler) {
+    const eventHandlers = this.eventHandlers = (this.eventHandlers || []);
+    eventHandlers.push({ name, handler });
+  }
+
+  off(name, handler) {
+    const { eventHandlers } = this;
+    if(eventHandlers) {
+      for(let i = eventHandlers.length - 1; i--;) {
+        let { ehName, ehHandler } = eventHandlers[i];
+        if(ehName === name && ehHandler === ehHandler) {
+          eventHandlers.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  trigger(name, thisArg, ...args) {
+    const { eventHandlers } = this;
+    thisArg = thisArg || this;
+    if(eventHandlers) {
+      const len = eventHandlers.length;
+      for(let i = 0; i < len; i++) {
+        eventHandlers[i].handler.apply(thisArg, args);
+      }
+    }
+  }
+
   graphHeight() {
     const { height, marginBottom, marginTop } = this.props;
     return height - marginBottom - marginTop;
