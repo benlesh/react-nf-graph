@@ -15,9 +15,31 @@ export default class NfLine extends Component {
     data: null
   }
 
-  getPath() {
-    const { graph, lineWriter, data } = this.props;
+  getTrimmedData() {
+    const { 
+      graph: { 
+        props: { leftX, rightX } 
+      }, 
+      data 
+    } = this.props;
+    
+    if(data) {
+      const minX = Math.min(leftX, rightX);
+      const maxX = leftX === minX ? rightX : leftX;
+      console.log(leftX, rightX);
+      return data.filter((d, i) => {
+        const x = d.x;
+        return (minX <=  x && x <= maxX) || // x is between min and max OR
+          (0 < i && maxX < x && d[i-1].x <= maxX) || // d is the point just after the max value OR
+          (i < data.length - 1 && x < minX && minX <= d[i+1].x) // d is the point just before the min value
+      });
+    }
+    return [];
+  }
 
+  getPath() {
+    const { graph, lineWriter } = this.props;
+    const data = this.getTrimmedData();
     if(graph && data) {
       var scaleX = graph.scaleX();
       var scaleY = graph.scaleY();

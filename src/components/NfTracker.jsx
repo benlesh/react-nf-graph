@@ -10,7 +10,6 @@ export default class NfTracker extends Component {
     show: true
   }
 
-
   constructor(props) {
     super(props);
     this.state = {
