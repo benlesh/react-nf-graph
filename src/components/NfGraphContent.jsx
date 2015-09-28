@@ -5,12 +5,22 @@ export default class NfGraphContent extends Component {
 
   componentDidMount() {
     const g = this.refs.target.getDOMNode();
-    
-    g.addEventListener('mousemove', ::this.contentMouseMove);
+
+    this._contentMouseMove = e => {
+      this.props.graph.trigger('contentMouseMove', this, e);
+    };
+
+    this._contentMouseOut = e => {
+      this.props.graph.trigger('contentMouseOut', this, e);
+    };
+
+    g.addEventListener('mousemove', this._contentMouseMove);
+    g.addEventListener('mouseout', this._contentMouseOut);
   }
 
-  contentMouseMove(e) {
-    this.props.graph.trigger('contentMouseMove', this, e);
+  componentWillUnmount() {
+    g.removeEventListener('mousemove', this._contentMouseMove);
+    g.removeEventListener('mouseout', this._contentMouseOut);
   }
 
   renderChildren() {

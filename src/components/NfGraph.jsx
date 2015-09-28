@@ -54,7 +54,10 @@ export default class NfGraph extends Component {
     if(eventHandlers) {
       const len = eventHandlers.length;
       for(let i = 0; i < len; i++) {
-        eventHandlers[i].handler.apply(thisArg, args);
+        let eventHandler = eventHandlers[i];
+        if(eventHandler.name === name) {
+          eventHandlers[i].handler.apply(thisArg, args);
+        }
       }
     }
   }
