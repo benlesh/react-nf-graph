@@ -19,12 +19,11 @@ export default class NfYAxis extends Component {
     const { graph, width, count } = this.props;
 
     if(graph) {
-      var yOffset = graph.graphY();
-      var scaleY = graph.scaleY();
-      var x = width - 5;
+      const { graphY, scaleY } = graph;
+      const x = width - 5;
       return scaleY.ticks(Number(count) || 8)
         .map(tick => ({
-          y: yOffset + scaleY(tick),
+          y: graphY + scaleY(tick),
           value: tick,
           x
         }));

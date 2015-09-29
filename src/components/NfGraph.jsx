@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import linearScale from '../util/linearScale';
+import memoizeForRender from '../util/memoizeForRender';
 
 export default class NfGraph extends Component {
 
@@ -11,10 +12,12 @@ export default class NfGraph extends Component {
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
-    topY: 1,
+    topY: 10,
     bottomY: 0,
     leftX: 0,
-    rightX: 1
+    rightX: 10,
+    ticksSizeX: 50,
+    ticksSizeY: 50
   }
 
   static propTypes = {
@@ -28,7 +31,18 @@ export default class NfGraph extends Component {
     bottomY:        PropTypes.number,
     leftX:          PropTypes.number,
     rightX:         PropTypes.number,
-    linearScale:    PropTypes.func
+    linearScale:    PropTypes.func,
+    tickSizeX:      PropTypes.number,
+    tickSizeY:      PropTypes.number
+  }
+
+  @memoizeForRender
+  get ticksX() {
+    const graphWidth = this.graphWidth;
+    const scaleX = this.scaleX;
+    const tickSizeX = this.props.tickSizeX;
+
+    return scaleX.ticks(Math.round(graphWidth / tickSizeX));
   }
 
   on(name, handler) {
@@ -62,48 +76,58 @@ export default class NfGraph extends Component {
     }
   }
 
-  graphHeight() {
+  @memoizeForRender
+  get graphHeight() {
     const { height, marginBottom, marginTop } = this.props;
     return height - marginBottom - marginTop;
   }
 
-  graphWidth() {
+  @memoizeForRender
+  get graphWidth() {
     const { width, marginLeft, marginRight } = this.props;
     return width - marginLeft - marginRight;
   }
 
-  graphX() {
+  @memoizeForRender
+  get graphX() {
     return Number(this.props.marginLeft);
   }
 
-  graphY() {
+  @memoizeForRender
+  get graphY() {
     return Number(this.props.marginTop);
   }
 
-  domainX() {
+  @memoizeForRender
+  get domainX() {
     const { leftX, rightX } = this.props;
     return [leftX, rightX];
   }
 
-  domainY() {
+  @memoizeForRender
+  get domainY() {
     const { topY, bottomY } = this.props;
     return [bottomY, topY];
   }
 
-  rangeX() {
-    return [0, this.graphWidth()];
+  @memoizeForRender
+  get rangeX() {
+    return [0, this.graphWidth];
   }
 
-  rangeY() {
-    return [this.graphHeight(), 0];
+  @memoizeForRender
+  get rangeY() {
+    return [this.graphHeight, 0];
   }
 
-  scaleX() {
-    return this.props.linearScale(this.domainX(), this.rangeX());
+  @memoizeForRender
+  get scaleX() {
+    return this.props.linearScale(this.domainX, this.rangeX);
   }
 
-  scaleY() {
-    return this.props.linearScale(this.domainY(), this.rangeY());
+  @memoizeForRender
+  get scaleY() {
+    return this.props.linearScale(this.domainY, this.rangeY);
   }
 
   renderChildren() {

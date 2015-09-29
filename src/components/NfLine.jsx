@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import lineWriter from '../util/lineWriter';
+import memoizeForRender from '../util/memoizeForRender';
 
 export default class NfLine extends Component {
 
@@ -15,7 +16,8 @@ export default class NfLine extends Component {
     data: null
   }
 
-  getTrimmedData() {
+  @memoizeForRender
+  get trimmedData() {
     const { 
       graph: { 
         props: { leftX, rightX } 
@@ -26,7 +28,6 @@ export default class NfLine extends Component {
     if(data) {
       const minX = Math.min(leftX, rightX);
       const maxX = leftX === minX ? rightX : leftX;
-      console.log(leftX, rightX);
       return data.filter((d, i) => {
         const x = d.x;
         return (minX <=  x && x <= maxX) || // x is between min and max OR
@@ -34,23 +35,15 @@ export default class NfLine extends Component {
           (i < data.length - 1 && x < minX && minX <= d[i+1].x) // d is the point just before the min value
       });
     }
-    return [];
   }
 
   getPath() {
     const { graph, lineWriter } = this.props;
-    const data = this.getTrimmedData();
+    const data = this.trimmedData;
     if(graph && data) {
-      var scaleX = graph.scaleX();
-      var scaleY = graph.scaleY();
-
-      var lineFn = d3.svg.line()
-        .x(d => scaleX(d.x))
-        .y(d => scaleY(d.y));
-
-      return lineFn(data);
+      const { scaleX, scaleY } = graph;
+      return lineWriter(d => scaleX(d.x), d => scaleY(d.y), data);
     }
-
     return "M0,0";
   }
 

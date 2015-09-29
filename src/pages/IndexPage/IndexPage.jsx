@@ -20,7 +20,7 @@ class IndexPage extends Component {
   render() {
     let myData = [];
     for(let i = 0; i < 10; i++) {
-      myData.push({ x: i / 10, y: Math.random() });
+      myData.push({ x: i, y: Math.random() * 10 });
     }
 
     return (

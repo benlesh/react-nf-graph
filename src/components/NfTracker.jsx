@@ -38,9 +38,8 @@ export default class NfTracker extends Component {
   }
 
   snapToItem(item) {
-    const { graph } = this.props;
-    const scaleX = graph.scaleX();
-    const scaleY = graph.scaleY();
+    const { graph: { scaleX, scaleY } } = this.props;
+
     this.setState({ 
       visible: true,
       x: scaleX(item.x),  
@@ -55,8 +54,7 @@ export default class NfTracker extends Component {
       const { data } = this.props;
       if(data) {
         const { x, y } = getMousePoint(e.currentTarget, e);
-        const scaleX = graph.scaleX();
-        const scaleY = graph.scaleY();
+        const { scaleX, scaleY } = graph;
         const i = nearestIndexTo(data, scaleX.invert(x), selectX);
         const item = data[i];
 

@@ -19,12 +19,11 @@ export default class NfXAxis extends Component {
     const { graph, height, count } = this.props;
 
     if(graph) {
-      var xOffset = graph.graphX();
-      var scaleX = graph.scaleX();
-      var y = graph.props.height - height + 5;
+      const { graphX, scaleX } = graph;
+      const y = graph.props.height - height + 5;
       return scaleX.ticks(Number(count) || 8)
         .map(tick => ({
-          x: xOffset + scaleX(tick),
+          x: graphX + scaleX(tick),
           value: tick,
           y,
         }));
