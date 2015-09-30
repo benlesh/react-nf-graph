@@ -15,29 +15,23 @@ export default class NfXAxis extends Component {
     count: 8
   }
 
-  ticks() {
-    const { graph, height, count } = this.props;
+  renderTicks() {
+    const { graph, height, count, template } = this.props;
 
     if(graph) {
       const { graphX, scaleX } = graph;
       const y = graph.props.height - height + 5;
-      return scaleX.ticks(Number(count) || 8, tick => ({
-        x: graphX + scaleX(tick),
-        value: tick,
-        y,
-      }));
+      return scaleX.ticks(Number(count) || 8, (tick, i) => {
+        const x =  graphX + scaleX(tick),
+              value = tick;
+        return (
+          <g key={i} className="nf-x-axis-tick" transform={`translate(${x},${y})`}>
+            {template(value, x, y, i)}
+          </g>
+        );
+      });
     }
     return [];
-  }
-
-  renderTicks() {
-    const ticks = this.ticks();
-    const { template } = this.props;
-    return ticks.map(({x, y, value}, i) => (
-      <g key={i} className="nf-x-axis-tick" transform={`translate(${x},${y})`}>
-        {template(value, x, y, i)}
-      </g>
-    ));
   }
 
   render() {
