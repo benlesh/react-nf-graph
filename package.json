@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "core-decorators": "^0.3.0",
-    "d3": "^3.5.6",
     "history": "^1.9.1",
     "react": "^0.13.3",
     "react-router": "^1.0.0-rc1"

@@ -21,12 +21,11 @@ export default class NfYAxis extends Component {
     if(graph) {
       const { graphY, scaleY } = graph;
       const x = width - 5;
-      return scaleY.ticks(Number(count) || 8)
-        .map(tick => ({
-          y: graphY + scaleY(tick),
-          value: tick,
-          x
-        }));
+      return scaleY.ticks(Number(count) || 8, tick => ({
+        y: graphY + scaleY(tick),
+        value: tick,
+        x
+      }));
     }
     return [];
   }

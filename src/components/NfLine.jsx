@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import lineWriter from '../util/lineWriter';
 import memoizeForRender from '../util/memoizeForRender';
 
 export default class NfLine extends Component {
@@ -7,12 +6,10 @@ export default class NfLine extends Component {
   static needsGraph = true
 
   static propTypes = {
-    lineWriter:  PropTypes.func,
     data: PropTypes.array
   }
 
   static defaultProps = {
-    lineWriter: lineWriter,
     data: null
   }
 
@@ -37,6 +34,15 @@ export default class NfLine extends Component {
     }
   }
 
+  getPathStart() {
+    const { data } = this.props;
+    if(data && data.length > 0) {
+      let { x, y } = data[0];
+      return `M${x},${y} `;
+    }
+    return '';
+  }
+
   getPath() {
     const { 
       graph: { 
@@ -44,11 +50,10 @@ export default class NfLine extends Component {
         scaleY,
         props: { leftX, rightX } 
       }, 
-      data,
-      lineWriter
+      data
     } = this.props;
     
-    let result = '';
+    let result = this.getPathStart();
 
     if(data) {
       const minX = Math.min(leftX, rightX);
@@ -71,9 +76,6 @@ export default class NfLine extends Component {
         let px = scaleX(d.x),
             py = scaleY(d.y);
 
-        if(!result) {
-          result = `M${px},${py}`;
-        }
         result += ` L${px},${py}`;
       }
     }
