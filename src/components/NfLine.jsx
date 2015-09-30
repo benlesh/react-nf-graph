@@ -38,13 +38,47 @@ export default class NfLine extends Component {
   }
 
   getPath() {
-    const { graph, lineWriter } = this.props;
-    const data = this.trimmedData;
-    if(graph && data) {
-      const { scaleX, scaleY } = graph;
-      return lineWriter(d => scaleX(d.x), d => scaleY(d.y), data);
+    const { 
+      graph: { 
+        scaleX, 
+        scaleY,
+        props: { leftX, rightX } 
+      }, 
+      data,
+      lineWriter
+    } = this.props;
+    
+    let result = '';
+
+    if(data) {
+      const minX = Math.min(leftX, rightX);
+      const maxX = leftX === minX ? rightX : leftX;
+      const len = data.length;
+
+      for(let i = 0; i < len; i++) {
+        let d = data[i];
+        let x = d.x;
+
+        if(d.x > maxX && data[i-1].x > maxX) {
+          break;
+        }
+
+        if(d.x < minX && data[i+1].x < minX) {
+          continue;
+        }
+
+        // build the result string
+        let px = scaleX(d.x),
+            py = scaleY(d.y);
+
+        if(!result) {
+          result = `M${px},${py}`;
+        }
+        result += ` L${px},${py}`;
+      }
     }
-    return "M0,0";
+
+    return result || 'M0,0';
   }
 
   render() {
