@@ -8,6 +8,7 @@ import NfLine from '../../components/NfLine';
 import NfXAxis from '../../components/NfXAxis';
 import NfYAxis from '../../components/NfYAxis';
 import NfTracker from '../../components/NfTracker';
+import NfArea from '../../components/NfArea';
 
 export default
 @applyStyles(styles)
@@ -26,7 +27,7 @@ class IndexPage extends Component {
     return (
       <NfGraph marginBottom={20} marginLeft={80}>
         <NfGraphContent>
-          <NfLine data={myData}/>
+          <NfArea data={myData}/>
           <NfTracker data={myData} behavior="snap-last"/>
         </NfGraphContent>
         <NfXAxis template={(tick) => <text>{tick}</text>}/>
