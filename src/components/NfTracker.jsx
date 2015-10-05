@@ -1,9 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import getMousePoint from '../util/getMousePoint';
 import nearestIndexTo from '../util/nearestIndexTo';
 
 export default class NfTracker extends Component {
-  static needsGraph = true;
+  static contextTypes = {
+    scaleX: PropTypes.func.isRequired,
+    scaleY: PropTypes.func.isRequired,
+    graph: PropTypes.object.isRequired
+  }
 
   static defaultProps = {
     behavior: 'hover',
@@ -20,7 +24,7 @@ export default class NfTracker extends Component {
   }
 
   'snap-last'() {
-    const { data, graph } = this.props;
+    const { data } = this.props;
     if(data) {
       this.snapToItem(data[data.length - 1]);
     }
@@ -31,14 +35,14 @@ export default class NfTracker extends Component {
   }
 
   'snap-first'() {
-    const { data, graph } = this.props;
+    const { data } = this.props;
     if(data) {
       this.snapToItem(data[0]);
     }
   }
 
   snapToItem(item) {
-    const { graph: { scaleX, scaleY } } = this.props;
+    const { scaleX, scaleY } = this.context;
 
     this.setState({ 
       visible: true,
@@ -48,13 +52,13 @@ export default class NfTracker extends Component {
   }
 
   componentDidMount() {
-    const graph = this.props.graph;
+    const graph = this.context.graph;
 
     this._mouseMoveHandler = (e) => {
       const { data } = this.props;
       if(data) {
         const { x, y } = getMousePoint(e.currentTarget, e);
-        const { scaleX, scaleY } = graph;
+        const { scaleX, scaleY } = this.context;
         const i = nearestIndexTo(data, scaleX.invert(x), selectX);
         const item = data[i];
 

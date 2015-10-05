@@ -64,10 +64,11 @@ export default class NfGraph extends Component {
       topY: this.props.topY,
       bottomY: this.props.bottomY,
       leftX: this.props.leftX,
-      rightX: this.props.rightX
+      rightX: this.props.rightX,
+      on: ::this.on,
+      off: ::this.off,
+      trigger: ::this.trigger
     };
-
-    console.log(graph);
 
     return {
       graph,
