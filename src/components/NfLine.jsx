@@ -2,8 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import memoizeForRender from '../util/memoizeForRender';
 
 export default class NfLine extends Component {
-
-  static needsGraph = true
+  static contextTypes = {
+    graph: PropTypes.object.isRequired,
+    scaleX: PropTypes.func.isRequired,
+    scaleY: PropTypes.func.isRequired
+  }
 
   static propTypes = {
     data: PropTypes.array
@@ -15,12 +18,8 @@ export default class NfLine extends Component {
 
   @memoizeForRender
   get trimmedData() {
-    const { 
-      graph: { 
-        props: { leftX, rightX } 
-      }, 
-      data 
-    } = this.props;
+    const { data } = this.props;
+    const { leftX, rightX } = this.context.graph;
     
     if(data) {
       const minX = Math.min(leftX, rightX);
@@ -37,22 +36,18 @@ export default class NfLine extends Component {
   getPathStart() {
     const { data } = this.props;
     if(data && data.length > 0) {
-      let { x, y } = data[0];
-      return `M${x},${y} `;
+      const { x, y } = data[0];
+      const { scaleX, scaleY } = this.context;
+      let _x = scaleX(x),
+          _y = scaleY(y);
+      return `M${_x},${_y} `;
     }
     return '';
   }
 
   getPath() {
-    const { 
-      graph: { 
-        scaleX, 
-        scaleY,
-        props: { leftX, rightX } 
-      }, 
-      data
-    } = this.props;
-    
+    const { data } = this.props;
+    const { scaleX, scaleY, graph: { leftX, rightX } } = this.context;
     let result = this.getPathStart();
 
     if(data) {

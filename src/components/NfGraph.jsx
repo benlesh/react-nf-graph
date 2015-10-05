@@ -3,6 +3,11 @@ import linearScale from '../util/linearScale';
 import memoizeForRender from '../util/memoizeForRender';
 
 export default class NfGraph extends Component {
+  static childContextTypes = {
+    graph: PropTypes.object,
+    scaleX: PropTypes.func,
+    scaleY: PropTypes.func
+  }
 
   static defaultProps = {
     linearScale: linearScale,
@@ -34,6 +39,41 @@ export default class NfGraph extends Component {
     linearScale:    PropTypes.func,
     tickSizeX:      PropTypes.number,
     tickSizeY:      PropTypes.number
+  }
+
+  getChildContext() {
+    const scaleX = this.scaleX;
+    const scaleY = this.scaleY;
+    const graph = {
+      scaleX: this.scaleX,
+      scaleY: this.scaleY,
+      width: this.props.width,
+      height: this.props.height,
+      content: {
+        width: this.graphWidth,
+        height: this.graphHeight,
+        x: this.graphX,
+        y: this.graphY
+      },
+      margin: {
+        left: this.props.marginLeft,
+        right: this.props.marginRight,
+        top: this.props.marginTop,
+        bottom: this.props.marginBottom
+      },
+      topY: this.props.topY,
+      bottomY: this.props.bottomY,
+      leftX: this.props.leftX,
+      rightX: this.props.rightX
+    };
+
+    console.log(graph);
+
+    return {
+      graph,
+      scaleX,
+      scaleY
+    }
   }
 
   @memoizeForRender

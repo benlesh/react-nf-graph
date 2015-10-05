@@ -5,10 +5,11 @@ import NfLine from './NfLine';
 export default class NfArea extends NfLine {
 
   getPathStart() {
-    const { data, graph } = this.props;
+    const { data } = this.props;
     if(data && data.length > 0) {
       let { x, y } = data[0];
-      let { props: { bottomY }, scaleX, scaleY } = graph;
+      let { graph: { bottomY }, scaleX, scaleY } = this.context;
+      console.log(bottomY);
       let by = scaleY(bottomY),
           _y = scaleY(y),
           _x = scaleX(x);
@@ -18,16 +19,15 @@ export default class NfArea extends NfLine {
   }
 
   getPath() {
-    const {
-      data,
-      graph: {
-        props: { leftX, rightX, bottomY },
-        scaleX,
-        scaleY
-      }
-    } = this.props;
+    const { data } = this.props;
 
     if(data && data.length > 0) {
+      const {
+        graph: { leftX, rightX, bottomY },
+        scaleX,
+        scaleY
+      } = this.context;
+
       let path = super.getPath();
       let lx = scaleX(Math.max(leftX, data[0].x));
       let rx = scaleX(Math.min(rightX, data[data.length - 1].x));

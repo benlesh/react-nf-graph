@@ -27,7 +27,7 @@ class IndexPage extends Component {
     return (
       <NfGraph marginBottom={20} marginLeft={80}>
         <NfGraphContent>
-          <NfArea data={myData}/>
+          <NfLine data={myData}/>
           <NfTracker data={myData} behavior="snap-last"/>
         </NfGraphContent>
         <NfXAxis template={(tick) => <text>{tick}</text>}/>
