@@ -4,7 +4,7 @@ export default class NfGraphContent extends Component {
   static needsGraph = true;
 
   componentDidMount() {
-    const g = this.refs.target.getDOMNode();
+    const g = this.refs.target;
 
     this._contentMouseMove = e => {
       this.props.graph.trigger('contentMouseMove', this, e);
