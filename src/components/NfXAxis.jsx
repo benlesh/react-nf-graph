@@ -2,7 +2,11 @@ import React, { Component, PropTypes } from 'react';
 
 export default class NfXAxis extends Component {
 
-  static needsGraph = true;
+  static contextTypes = {
+    graph: PropTypes.object.isRequired,
+    scaleX: PropTypes.func.isRequired,
+    scaleY: PropTypes.func.isRequired
+  };
 
   static propTypes = {
     height: PropTypes.number,
@@ -16,22 +20,19 @@ export default class NfXAxis extends Component {
   }
 
   renderTicks() {
-    const { graph, height, count, template } = this.props;
-
-    if(graph) {
-      const { graphX, scaleX } = graph;
-      const y = graph.props.height - height + 5;
-      return scaleX.ticks(Number(count) || 8, (tick, i) => {
-        const x =  graphX + scaleX(tick),
-              value = tick;
-        return (
-          <g key={i} className="nf-x-axis-tick" transform={`translate(${x},${y})`}>
-            {template(value, x, y, i)}
-          </g>
-        );
-      });
-    }
-    return [];
+    const { height, count, template } = this.props;
+    const { graph, scaleX } = this.context;
+    const y = graph.height - height + 5;
+    
+    return scaleX.ticks(Number(count) || 8, (tick, i) => {
+      const x =  graph.content.x + scaleX(tick),
+            value = tick;
+      return (
+        <g key={i} className="nf-x-axis-tick" transform={`translate(${x},${y})`}>
+          {template(value, x, y, i)}
+        </g>
+      );
+    });
   }
 
   render() {

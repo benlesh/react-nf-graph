@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class NfGraphContent extends Component {
-  static needsGraph = true;
+  static contextTypes = {
+    graph: PropTypes.object.isRequired
+  }
 
   componentDidMount() {
     const g = this.refs.target;
-
+    const { graph } = this.context;
     this._contentMouseMove = e => {
-      this.props.graph.trigger('contentMouseMove', this, e);
+      graph.trigger('contentMouseMove', this, e);
     };
 
     this._contentMouseOut = e => {
-      this.props.graph.trigger('contentMouseOut', this, e);
+      graph.trigger('contentMouseOut', this, e);
     };
 
     g.addEventListener('mousemove', this._contentMouseMove);
@@ -23,19 +25,11 @@ export default class NfGraphContent extends Component {
     g.removeEventListener('mouseout', this._contentMouseOut);
   }
 
-  renderChildren() {
-    const { children, graph } = this.props;
-
-    return React.Children.map(children, function(child) {
-      return  child.type.needsGraph ? React.cloneElement(child, { graph: graph }) : child;
-    }.bind(this));
-  }
-
   render() {
-    const { graph } = this.props;
-    return (<g ref="target" transform={`translate(${graph.graphX},${graph.graphY})`}>
-      <rect className="nf-graph-content-bg" x="0" y="0" width={graph.graphWidth} height={graph.graphHeight}/>
-      {this.renderChildren()}
+    const { graph: { content } } = this.context;
+    return (<g ref="target" transform={`translate(${content.x},${content.y})`}>
+      <rect className="nf-graph-content-bg" x="0" y="0" width={content.width} height={content.height}/>
+      { this.props.children }
     </g>);
   }
 }

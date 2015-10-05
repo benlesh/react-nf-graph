@@ -171,18 +171,12 @@ export default class NfGraph extends Component {
     return this.props.linearScale(this.domainY, this.rangeY);
   }
 
-  renderChildren() {
-    return React.Children.map(this.props.children, function(child) {
-      return child.type.needsGraph ? React.cloneElement(child, { graph: this }) : child
-    }.bind(this));
-  }
-
   render() {
     const { width, height } = this.props;
 
     return (<div><svg className="nf-graph" width={width} height={height}>
       <rect className="nf-graph-bg" x="0" y="0" width={width} height={height}/>
-      {this.renderChildren()}
+      { this.props.children }
     </svg></div>);
   }
 }
